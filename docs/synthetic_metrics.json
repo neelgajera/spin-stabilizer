@@ -1,0 +1,14 @@
+{
+  "frames": 72,
+  "jitter_px_raw": 81.42,
+  "jitter_px_stabilized": 10.63,
+  "jitter_px_ideal_turntable": 1.75,
+  "subject_centre_drift_px_raw": 13.9,
+  "roll_std_deg_raw": 3.2,
+  "roll_std_deg_stabilized": 0.0,
+  "orbit_rms_radial": 3.59,
+  "orbit_rms_height": 1.75,
+  "zoom": 1.399,
+  "seconds": 2.5,
+  "unique_source_frames": 72
+}
