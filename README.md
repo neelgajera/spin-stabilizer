@@ -3,16 +3,33 @@
 Turn a hand-held 360° walk-around into a **level, centred, evenly spaced turntable spin**, using nothing but
 the camera poses and sparse points from Structure-from-Motion.
 
-![Hand-held vs stabilized](docs/before_after.gif)
+![Hand-held vs stabilized: Chevy Colorado](docs/chevy_before_after.gif)
 
-*Synthetic walk-around with ±3° hand roll, aim jitter and uneven walking distance (left) and the stabilized
-spin (right). Reproduce it with `python tests/make_synthetic.py data/synthetic && python stabilize.py data/synthetic`.*
+*A 70 s phone walk-around of a Chevy Colorado (left: nearest hand-held frame; right: stabilized). The licence
+plate was replaced with [video-to-splat's multi-view plate replacement](../video-to-splat#plate-replacement).*
 
-| Synthetic benchmark (72 output frames) | Hand-held | Stabilized | Perfect turntable |
-|---|---|---|---|
-| Jitter of subject points (RMS 2nd difference, px) | 81.4 | **10.6** | 1.7 |
-| Roll std (deg) | 3.2 | **0** | 0 |
-| Runtime (CPU) | | **~3 s** | |
+## Results
+
+Jitter = RMS second difference (acceleration) of the subject's sparse SfM points along the spin, in source
+pixels. "Floor" is the same measure for a mathematically perfect turntable through the same views. Points
+still move on curves there, so it isn't zero.
+
+| Capture | Poses | Output frames | Jitter before → after | Floor | Roll std before → after |
+|---|---|---|---|---|---|
+| Chevy Colorado (real, 1920×1080) | COLMAP, 180 frames | 72 | 40.3 → **10.4 px** | 4.4 px | 1.67° → **0°** |
+| Chevy Colorado | COLMAP, 180 frames | 28 | 70.2 → **33.8 px** | 29.0 px | 1.73° → **0°** |
+| Chevy Colorado | **VGGT**, 28 frames | 28 | 77.8 → **52.8 px** | 26.3 px | 1.55° → **0°** |
+| Synthetic (±3° roll, aim jitter) | exact | 72 | 81.4 → **10.6 px** | 1.7 px | 3.2° → **0°** |
+
+**COLMAP vs VGGT poses.** VGGT's cameras agree with COLMAP to a median of **0.48°** in rotation and **0.67%
+of the orbit radius** in position. On a 6 GB laptop GPU it handles 28 frames per pass in **34 s** (5.4 GB
+peak), against 11.8 min for COLMAP on 180 frames. VGGT removes roll completely and cuts jitter by a third,
+which makes it a good instant preview. At the same 28 output frames, COLMAP's tighter poses land within
+17% of the perfect-turntable floor, so it's the final-quality option. Bundle-adjusting VGGT's output would close most of the gap (see *next steps*).
+
+Stabilizing itself takes ~3 s on a CPU. Reproduce the synthetic row with
+`python tests/make_synthetic.py data/synthetic && python stabilize.py data/synthetic`
+([synthetic GIF](docs/before_after.gif)).
 
 ## Why
 
@@ -64,8 +81,10 @@ python stabilize.py ../video-to-splat/runs/walkaround/dataset
 
 ## Limitations and next steps
 
+- VGGT poses are ~0.5° off COLMAP's. Refining them with bundle adjustment on tracked points (as
+  in VGGT's `demo_colmap.py --use_ba`) should bring the VGGT row close to the COLMAP row.
 - A single homography is exact only on the subject plane. Points far in front of or behind it keep some
-  parallax, which is the gap between 10.6 px and the 1.7 px floor above. Next step: a content-preserving
+  parallax, which is the gap between the stabilized and floor numbers above. Next step: a content-preserving
   mesh warp (Liu et al., *Content-Preserving Warps for 3D Video Stabilization*, SIGGRAPH 2009) driven by
   the same sparse points.
 - Assumes one roughly closed orbit around one subject.
