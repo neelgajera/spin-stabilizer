@@ -6,7 +6,7 @@ the camera poses and sparse points from Structure-from-Motion.
 ![Hand-held vs stabilized: Chevy Colorado](docs/chevy_before_after.gif)
 
 *A 70 s phone walk-around of a Chevy Colorado (left: nearest hand-held frame; right: stabilized). The licence
-plate was replaced with [video-to-splat's multi-view plate replacement](../video-to-splat#plate-replacement).*
+plate was replaced with [video-to-splat's multi-view plate replacement](https://github.com/neelgajera/video-to-splat#plate-replacement-replace_platespy-v2splatespy).*
 
 ## Results
 
@@ -42,7 +42,7 @@ spaced, level views.
 ## How it works
 
 1. **Poses.** Any undistorted COLMAP model works: run COLMAP, or use
-   [video-to-splat](../video-to-splat) with `--poses vggt` to get poses from a single
+   [video-to-splat](https://github.com/neelgajera/video-to-splat) with `--poses vggt` to get poses from a single
    [VGGT](https://github.com/facebookresearch/vggt) forward pass in seconds.
 2. **Orbit fit** ([`spinstab/orbit.py`](spinstab/orbit.py)).
    - *Subject centre*: the least-squares point closest to all optical axes, i.e. what the operator aimed at.
@@ -89,7 +89,7 @@ python stabilize.py ../video-to-splat/runs/walkaround/dataset
   the same sparse points.
 - Assumes one roughly closed orbit around one subject.
 - Output frames come from real frames, so angles the capture skipped can't be filled.
-  [video-to-splat](../video-to-splat) solves that by rendering any angle from a 3D model.
+  [video-to-splat](https://github.com/neelgajera/video-to-splat) solves that by rendering any angle from a 3D model.
 
 ## Background
 
