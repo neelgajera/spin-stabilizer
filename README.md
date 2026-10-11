@@ -17,6 +17,8 @@ still move on curves there, so it isn't zero.
 | Capture | Poses | Output frames | Jitter before → after | Floor | Roll std before → after |
 |---|---|---|---|---|---|
 | Chevy Colorado (real, 1920×1080) | COLMAP, 180 frames | 72 | 40.3 → **10.4 px** | 4.4 px | 1.67° → **0°** |
+| Toyota Camry (real, 1280×720) | COLMAP, 180 frames | 72 | 22.5 → **12.1 px** | 4.1 px | 0.88° → **0°** |
+| Dodge Durango (real, 1280×720) | COLMAP, 180 frames | 72 | 17.0 → **11.9 px** | 4.0 px | 0.94° → **0°** |
 | Chevy Colorado | COLMAP, 180 frames | 28 | 70.2 → **33.8 px** | 29.0 px | 1.73° → **0°** |
 | Chevy Colorado | **VGGT**, 28 frames | 28 | 77.8 → **52.8 px** | 26.3 px | 1.55° → **0°** |
 | Synthetic (±3° roll, aim jitter) | exact | 72 | 81.4 → **10.6 px** | 1.7 px | 3.2° → **0°** |
@@ -26,6 +28,13 @@ of the orbit radius** in position. On a 6 GB laptop GPU it handles 28 frames per
 peak), against 11.8 min for COLMAP on 180 frames. VGGT removes roll completely and cuts jitter by a third,
 which makes it a good instant preview. At the same 28 output frames, COLMAP's tighter poses land within
 17% of the perfect-turntable floor, so it's the final-quality option. Bundle-adjusting VGGT's output would close most of the gap (see *next steps*).
+
+The gain is largest on shaky captures. The Camry and Durango walk-arounds were already steady, so
+stabilizing mostly removes roll and evens out the spacing.
+
+| Toyota Camry | Dodge Durango |
+|---|---|
+| ![Camry before/after](docs/camry_before_after.gif) | ![Durango before/after](docs/durango_before_after.gif) |
 
 Stabilizing itself takes ~3 s on a CPU. Reproduce the synthetic row with
 `python tests/make_synthetic.py data/synthetic && python stabilize.py data/synthetic`
